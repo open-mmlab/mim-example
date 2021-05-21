@@ -80,10 +80,11 @@ model = dict(
 完成之后，可以利用如下命令训练并测试新的识别模型：
 
 ```shell
+# 当前工作路径为 `mim-example/mmcls_custom_backbone`
 # 训练
-mim train mmcls custom_net_config.py --gpus 1 --work-dir MyExperiment
+PYTHONPATH=$PWD:$PYTHONPATH mim train mmcls custom_net_config.py --gpus 1 --work-dir MyExperiment
 # 测试
-mim test mmcls custom_net_config.py --checkpoint ckpt.pth --gpus 1 --metrics accuracy
+PYTHONPATH=$PWD:$PYTHONPATH mim test mmcls custom_net_config.py --checkpoint ckpt.pth --gpus 1 --metrics accuracy
 ```
 
 在这里，我们直接使用 [MIM](https://github.com/open-mmlab/mim) 启动了训练和测试.
