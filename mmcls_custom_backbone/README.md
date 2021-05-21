@@ -80,10 +80,11 @@ model = dict(
 After that, you can train / test the classifier based on the custom backbone with following commands:
 
 ```shell
+# The working directory is `mim-example/mmcls_custom_backbone`
 # Training
-mim train mmcls custom_net_config.py --gpus 1 --work-dir MyExperiment
+PYTHONPATH=$PWD:$PYTHONPATH mim train mmcls custom_net_config.py --gpus 1 --work-dir MyExperiment
 # Testing
-mim test mmcls custom_net_config.py --checkpoint ckpt.pth --gpus 1 --metrics accuracy
+PYTHONPATH=$PWD:$PYTHONPATH mim test mmcls custom_net_config.py --checkpoint ckpt.pth --gpus 1 --metrics accuracy
 ```
 
 Here we directly use [MIM](https://github.com/open-mmlab/mim) to launch the training and testing.
