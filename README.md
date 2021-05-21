@@ -1,4 +1,4 @@
-# MIM-Examples
+# MIM-Example
 
 English | [简体中文](README_zh-CN.md)
 
