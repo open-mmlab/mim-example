@@ -5,18 +5,23 @@ It implements Swin Transformer for object detection and segmentation tasks to sh
 
 ## Requirements
 
-- MMCV-full v1.3.4
-- MMDetection v2.12.0
-- MMSegmentation v0.13.0
+- MIM 0.1.0
+- MMCV-full v1.3.5
+- MMDetection v2.13.0
+- MMSegmentation v0.14.0
+- timm
 
 You can install them after installing mim through the following commands
 
 ```bash
 pip install openmim  # install mim through pypi
-mim install mmcv-full==1.3.4
-mim install mmdet==2.12.0
-mim install mmsegmentation=0.13.0
+pip install timm  # swin transformer relies timm
+mim install mmcv-full==1.3.5  # install mmcv
+MKL_THREADING_LAYER=GNU mim install mmdet==2.13.0  # install mmdet to run object detection
+MKL_THREADING_LAYER=GNU mim install mmsegmentation=0.14.0  # install mmseg to run semantic segmentation
 ```
+
+**Note**: `MKL_THREADING_LAYER=GNU` is workaround according to the [issue](https://github.com/pytorch/pytorch/issues/37377).
 
 ## Explaination
 
@@ -26,14 +31,14 @@ The implementation of Swin Transformer and its pre-trained models are taken from
 
 ## Usages
 
-To run it with mmdet, we can use the command as below
+Assume now you are in the directory under `swin_transformer`, to run it with mmdet and slurm, we can use the command as below
 
 ```bash
-sh ./slurm_train.sh mmdet $PARTITION $JOB_NAME configs/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco.py ./work_dir/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco.py
+PYTHONPATH='.':$PYTHONPATH mim train mmdet configs/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco.py --work-dir ../work_dir/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco.py --launcher slurm --partition $PARTITION --gpus 8 --gpus-per-node 8  --srun-args ${SRUN_ARGS}
 ```
 
 To run it with mmseg, we can use the command as below
 
 ```bash
-sh ./slurm_train.sh mmseg $PARTITION $JOB_NAME configs/upernet/upernet_swin-t_512x512_160k_8x2_ade20k.py ./work_dir/upernet_swin-t_512x512_160k_8x2_ade20k.py
+PYTHONPATH='.':$PYTHONPATH mim train mmseg configs/upernet/upernet_swin-t_512x512_160k_8x2_ade20k.py --work-dir ../work_dir/upernet_swin-t_512x512_160k_8x2_ade20k.py --launcher slurm --partition $PARTITION --gpus 8 --gpus-per-node 8 --srun-args ${SRUN_ARGS}
 ```

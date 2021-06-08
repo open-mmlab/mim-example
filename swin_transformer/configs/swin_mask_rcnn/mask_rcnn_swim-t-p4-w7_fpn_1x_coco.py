@@ -1,7 +1,7 @@
 _base_ = [
     '../_base_/models/mask_rcnn_r50_fpn.py',
     '../_base_/datasets/coco_instance.py',
-    '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
+    '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime_det.py'
 ]
 
 model = dict(
@@ -9,7 +9,8 @@ model = dict(
     pretrained='./pretrain/swin/swin_tiny_patch4_window7_224.pth',
     backbone=dict(
         _delete_=True,
-        type='SwinTransformer',
+        # SwinTransformer is registered in the MMCV MODELS registry
+        type='mmcv.SwinTransformer',
         embed_dim=96,
         depths=[2, 2, 6, 2],
         num_heads=[3, 6, 12, 24],

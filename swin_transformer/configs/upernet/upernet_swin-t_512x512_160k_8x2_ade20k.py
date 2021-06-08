@@ -6,7 +6,8 @@ model = dict(
     pretrained='./pretrain/swin/swin_tiny_patch4_window7_224.pth',
     backbone=dict(
         _delete_=True,
-        type='SwinTransformer',
+        # SwinTransformer is registered in the MMCV MODELS registry
+        type='mmcv.SwinTransformer',
         embed_dim=96,
         depths=[2, 2, 6, 2],
         num_heads=[3, 6, 12, 24],

@@ -539,6 +539,7 @@ class SwinTransformer(nn.Module):
         frozen_stages (int): Stages to be frozen (stop grad and set eval mode).
             -1 means not freezing any parameters.
         use_checkpoint (bool): Whether to use checkpointing to save memory. Default: False.
+        pretrained (str, optional): The path of the pretrained models to initilize the module.
     """
 
     def __init__(self,
@@ -560,7 +561,8 @@ class SwinTransformer(nn.Module):
                  patch_norm=True,
                  out_indices=(0, 1, 2, 3),
                  frozen_stages=-1,
-                 use_checkpoint=False):
+                 use_checkpoint=False,
+                 pretrained=None):
         super().__init__()
 
         self.pretrain_img_size = pretrain_img_size
@@ -570,6 +572,7 @@ class SwinTransformer(nn.Module):
         self.patch_norm = patch_norm
         self.out_indices = out_indices
         self.frozen_stages = frozen_stages
+        self.pretrained = pretrained
 
         # split image into non-overlapping patches
         self.patch_embed = PatchEmbed(
@@ -654,7 +657,13 @@ class SwinTransformer(nn.Module):
             pretrained (str, optional): Path to pre-trained weights.
                 Defaults to None.
         """
-
+        # MMDetection now use init_cfg to initialize modules while
+        # MMSegmentation will do that in the next release.
+        # The logic below makes the initialization behavior compatible with
+        # MMDetection and MMSegmentation.
+        if pretrained is None and self.pretrained is not None:
+            pretrained = self.pretrained
+            
         def _init_weights(m):
             if isinstance(m, nn.Linear):
                 trunc_normal_(m.weight, std=.02)
