@@ -42,3 +42,19 @@ To run it with mmseg, we can use the command as below
 ```bash
 PYTHONPATH='.':$PYTHONPATH mim train mmseg configs/upernet/upernet_swin-t_512x512_160k_8x2_ade20k.py --work-dir ../work_dir/upernet_swin-t_512x512_160k_8x2_ade20k.py --launcher slurm --partition $PARTITION --gpus 8 --gpus-per-node 8 --srun-args ${SRUN_ARGS}
 ```
+
+
+## Results
+
+### ADE20K
+
+| Backbone | Method | Crop Size | Lr Schd | mIoU | Config | Download |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Swin-T | UPerNet | 512x512 | 160K | | [config](swin_transformer/configs/swin_upernet/upernet_swin-t_512x512_160k_8x2_ade20k.py) | [model]() &#124;  [log]() |
+
+### COCO
+
+| Backbone | Method | Lr Schd | Bbox mAP | Mask mAP| Config | Download |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Swin-T | Mask R-CNN | 1x| | |[config](swin_transformer/configs/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_1x_coco.py) | [model]() &#124;  [log]() |
+| Swin-T | Mask R-CNN | FP16 1x| | |[config](swin_transformer/configs/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco.py) | [model]() &#124;  [log]() |
