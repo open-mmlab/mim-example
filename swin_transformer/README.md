@@ -5,7 +5,7 @@ It implements Swin Transformer for object detection and segmentation tasks to sh
 
 ## Requirements
 
-- MIM 0.1.0
+- MIM>=0.1.1
 - MMCV-full v1.3.5
 - MMDetection v2.13.0
 - MMSegmentation v0.14.0
@@ -14,7 +14,7 @@ It implements Swin Transformer for object detection and segmentation tasks to sh
 You can install them after installing mim through the following commands
 
 ```bash
-pip install openmim  # install mim through pypi
+pip install openmim>=0.1.1  # install mim through pypi
 pip install timm  # swin transformer relies timm
 mim install mmcv-full==1.3.5  # install mmcv
 MKL_THREADING_LAYER=GNU mim install mmdet==2.13.0  # install mmdet to run object detection
