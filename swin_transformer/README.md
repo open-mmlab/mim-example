@@ -116,8 +116,7 @@ PYTHONPATH='.':$PYTHONPATH mim train mmseg configs/upernet/upernet_swin-t_512x51
 
 | Backbone | Method | Crop Size | Lr Schd | mIoU | Config | Download |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Swin-T | UPerNet | 512x512 | 160K | 44.3 | [config](/configs/swin_upernet/upernet_swin-t_512x512_160k_8x2_ade20k.py) | [model]() &#124;  [log]() |
-
+| Swin-T | UPerNet | 512x512 | 160K | 44.3 | [config](/configs/swin_upernet/upernet_swin-t_512x512_160k_8x2_ade20k.py) | [model](https://download.openmmlab.com/mim-example/swin_transformer/swin_upernet/upernet_swin-t_512x512_160k_8x2_ade20k_20210613_201937-4f09fb29.pth) &#124;  [log](https://download.openmmlab.com/mim-example/swin_transformer/swin_upernet/upernet_swin-t_512x512_160k_8x2_ade20k_20210613_201937.log.json) |
 ### COCO
 
 | Backbone | Method | Lr Schd | Bbox mAP | Mask mAP| Config | Download |
