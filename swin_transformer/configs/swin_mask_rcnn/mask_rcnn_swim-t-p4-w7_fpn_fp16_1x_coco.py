@@ -44,5 +44,5 @@ runner = dict(max_epochs=12)
 
 custom_imports = dict(
     imports=['swin.swin_transformer'], allow_failed_imports=False)
-
-fp16 = dict(loss_scale=dict(init_scale=512, mode='dynamic'))
+# you need to set mode='dynamic' if you are using pytorch<=1.5.0
+fp16 = dict(loss_scale=dict(init_scale=512))

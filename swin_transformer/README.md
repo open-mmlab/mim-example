@@ -56,5 +56,5 @@ PYTHONPATH='.':$PYTHONPATH mim train mmseg configs/upernet/upernet_swin-t_512x51
 
 | Backbone | Method | Lr Schd | Bbox mAP | Mask mAP| Config | Download |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Swin-T | Mask R-CNN | 1x| 42.6| 39.5 |[config](swin_transformer/configs/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_1x_coco.py) | [model]() &#124;  [log]() |
-| Swin-T | Mask R-CNN | FP16 1x| 42.5|39.3 |[config](swin_transformer/configs/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco.py) | [model]() &#124;  [log]() |
+| Swin-T | Mask R-CNN | 1x| 42.6| 39.5 |[config](swin_transformer/configs/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_1x_coco.py) | [model](https://download.openmmlab.com/mim-example/swin_transformer/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_1x_coco/mask_rcnn_swim-t-p4-w7_fpn_1x_coco_20210612_135948-bf3d7aa4.pth) &#124;  [log](https://download.openmmlab.com/mim-example/swin_transformer/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_1x_coco/mask_rcnn_swim-t-p4-w7_fpn_1x_coco_20210612_135948.log.json) |
+| Swin-T | Mask R-CNN | FP16 1x| 42.5|39.3 |[config](swin_transformer/configs/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco.py) | [model](https://download.openmmlab.com/mim-example/swin_transformer/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco_20210612_135948-6434d76f.pth) &#124;  [log](https://download.openmmlab.com/mim-example/swin_transformer/swin_mask_rcnn/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco/mask_rcnn_swim-t-p4-w7_fpn_fp16_1x_coco_20210612_135948.log.json) |
