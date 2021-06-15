@@ -10,7 +10,7 @@ This example demonstrates how to train / test a model with a custom backbone usi
 ### 1. Define and register the backbone
 
 ```python
-from mmcli.utils import exit_with_error
+from mim.utils import exit_with_error
 
 try:
     # Import the backbone registry from mmcls
