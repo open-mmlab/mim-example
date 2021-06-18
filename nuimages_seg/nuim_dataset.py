@@ -8,7 +8,33 @@ from mmseg.utils import get_root_logger
 
 @DATASETS.register_module()
 class NuImagesDataset(CustomDataset):
-    CLASSES = ()
+    CLASSES = (
+        'animal',
+        'human.pedestrian.adult',
+        'human.pedestrian.child',
+        'human.pedestrian.construction_worker',
+        'human.pedestrian.personal_mobility',
+        'human.pedestrian.police_officer',
+        'human.pedestrian.stroller',
+        'human.pedestrian.wheelchair',
+        'movable_object.barrier',
+        'movable_object.debris',
+        'movable_object.pushable_pullable',
+        'movable_object.trafficcone',
+        'static_object.bicycle_rack',
+        'vehicle.bicycle',
+        'vehicle.bus.bendy',
+        'vehicle.bus.rigid',
+        'vehicle.car',
+        'vehicle.construction',
+        'vehicle.emergency.ambulance',
+        'vehicle.emergency.police',
+        'vehicle.motorcycle',
+        'vehicle.trailer',
+        'vehicle.truck',
+        'flat.driveable_surface',
+        'vehicle.ego',
+    )
 
     def load_annotations(self, img_dir, img_suffix, ann_dir, seg_map_suffix,
                          split):
@@ -25,14 +51,13 @@ class NuImagesDataset(CustomDataset):
             list[dict]: All image info of dataset.
         """
         # Here we take ann_dir as the annotation path
-        annotations = mmcv.load(ann_dir)
-        ann_root = osp.split(ann_dir)[0]
+        annotations = mmcv.load(split)
         img_infos = []
         for img in annotations['images']:
             img_info = dict(filename=img['file_name'])
             seg_map = img_info['filename'].replace(img_suffix, seg_map_suffix)
             img_info['ann'] = dict(
-                seg_map=osp.join(ann_root, 'semantic_masks', seg_map))
+                seg_map=osp.join(ann_dir, 'semantic_masks', seg_map))
             img_infos.append(img_info)
 
         print_log(
@@ -44,3 +69,16 @@ class NuImagesDataset(CustomDataset):
         """Prepare results dict for pipeline."""
         super(NuImagesDataset, self).pre_pipeline(results)
         results['seg_prefix'] = ''
+
+    def get_gt_seg_maps(self, efficient_test=False):
+        """Get ground truth segmentation maps for evaluation."""
+        gt_seg_maps = []
+        for img_info in self.img_infos:
+            seg_map = img_info['ann']['seg_map']
+            if efficient_test:
+                gt_seg_map = seg_map
+            else:
+                gt_seg_map = mmcv.imread(
+                    seg_map, flag='unchanged', backend='pillow')
+            gt_seg_maps.append(gt_seg_map)
+        return gt_seg_maps

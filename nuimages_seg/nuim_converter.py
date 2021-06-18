@@ -59,7 +59,7 @@ def parse_args():
     return args
 
 
-def get_img_annos(nuim, img_info, cat2id, out_dir, data_root, seg_root):
+def get_img_annos(nuim, img_info, cat2id, seg_root):
     """Get semantic segmentation map for an image.
     Args:
         nuim (obj:`NuImages`): NuImages dataset object
@@ -70,11 +70,14 @@ def get_img_annos(nuim, img_info, cat2id, out_dir, data_root, seg_root):
     sd_token = img_info['token']
     image_id = img_info['id']
     name_to_index = name_to_index_mapping(nuim.category)
-    import pdb; pdb.set_trace()
+    index_to_continuous = {
+        v:i
+        for i, (k, v) in enumerate(name_to_index.items())
+    }
 
     # Get image data.
     width, height = img_info['width'], img_info['height']
-    semseg_mask = np.zeros((height, width)).astype('uint8')
+    semseg_mask = np.zeros((height, width)).astype('uint8') + 255
 
     # Load stuff / surface regions.
     surface_anns = [
@@ -91,7 +94,8 @@ def get_img_annos(nuim, img_info, cat2id, out_dir, data_root, seg_root):
         mask = mask_decode(ann['mask'])
 
         # Draw mask for semantic segmentation.
-        semseg_mask[mask == 1] = name_to_index[category_name]
+        semseg_mask[mask == 1] = index_to_continuous[
+            name_to_index[category_name]]
 
     # Load object instances.
     object_anns = [
@@ -115,7 +119,7 @@ def get_img_annos(nuim, img_info, cat2id, out_dir, data_root, seg_root):
         mask = mask_decode(ann['mask'])
 
         # Draw masks for semantic segmentation and instance segmentation.
-        semseg_mask[mask == 1] = name_to_index[category_name]
+        semseg_mask[mask == 1] = index_to_continuous[name_to_index[category_name]]
 
         if category_name in NAME_MAPPING:
             cat_name = NAME_MAPPING[category_name]
@@ -141,15 +145,8 @@ def get_img_annos(nuim, img_info, cat2id, out_dir, data_root, seg_root):
     img_filename = img_info['file_name']
     seg_filename = img_filename.replace('jpg', 'png')
     seg_filename = osp.join(seg_root, seg_filename)
-    # see description in https://github.com/nutonomy/nuscenes-devkit/blob/9b209638ef3dee6d0cdc5ac700c493747f5b35fe/python-sdk/nuimages/utils/utils.py#L82  # noqa
-    # the semantic segmentation map starts from 1,
-    # and 0 is for unlabled area and should be ignored.
-    # in mmsegmentation, the default ignore index is 255, so we shift it
-    # this makes the segmentation map has different category ID
-    semseg_mask = semseg_mask - 1
-    semseg_mask[semseg_mask==-1] = 255
     mmcv.imwrite(semseg_mask, seg_filename)
-    return annotations, np.max(semseg_mask)
+    return annotations
 
 
 def export_nuim_to_coco(nuim, data_root, out_dir, extra_tag, version, nproc):
@@ -181,10 +178,9 @@ def export_nuim_to_coco(nuim, data_root, out_dir, extra_tag, version, nproc):
     global process_img_anno
 
     def process_img_anno(img_info):
-        single_img_annos, max_cls_id = get_img_annos(nuim, img_info, cat2id,
-                                                     out_dir, data_root,
+        single_img_annos = get_img_annos(nuim, img_info, cat2id,
                                                      seg_root)
-        return single_img_annos, max_cls_id
+        return single_img_annos
 
     print('Process img annotations...')
     if nproc > 1:
@@ -198,15 +194,10 @@ def export_nuim_to_coco(nuim, data_root, out_dir, extra_tag, version, nproc):
     # Determine the index of object annotation
     print('Process annotation information...')
     annotations = []
-    max_cls_ids = []
-    for single_img_annos, max_cls_id in outputs:
-        max_cls_ids.append(max_cls_id)
+    for single_img_annos in outputs:
         for img_anno in single_img_annos:
             img_anno.update(id=len(annotations))
             annotations.append(img_anno)
-
-    max_cls_id = max(max_cls_ids)
-    print(f'Max ID of class in the semantic map: {max_cls_id}')
 
     coco_format_json = dict(
         images=images, annotations=annotations, categories=categories)
@@ -224,6 +215,31 @@ def main():
             dataroot=args.data_root, version=version, verbose=True, lazy=True)
         export_nuim_to_coco(nuim, args.data_root, args.out_dir, args.extra_tag,
                             version, args.nproc)
+
+        if version == 'v1.0-val':
+            full_val_infos = mmcv.load(f'{args.out_dir}/{args.extra_tag}_{version}.json')
+            selected_images = full_val_infos['images'][:2400]
+            selected_img_ids = [x['id'] for x in selected_images]
+            selected_anns = []
+
+            for ann in full_val_infos['annotations']:
+                if ann['id'] in selected_img_ids:
+                    selected_anns.append(ann)
+
+            selected_val_infos = dict(
+                images=selected_images,
+                annotations=selected_anns,
+                categories=full_val_infos['categories']
+            )
+
+            mmcv.dump(
+                selected_val_infos,
+                f'{args.out_dir}/{args.extra_tag}_{version}2400.json')
+
+    name_to_index = name_to_index_mapping(nuim.category)
+    print(f'Parse masks of {len(name_to_index)} categories:')
+    for k in name_to_index.keys():
+        print(f'{k},')
 
 
 if __name__ == '__main__':
