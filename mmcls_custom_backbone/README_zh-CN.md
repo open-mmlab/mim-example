@@ -10,7 +10,7 @@
 ### 1. 定义新的主干网络，并在 MMClassification 中注册
 
 ```python
-from mmcli.utils import exit_with_error
+from mim.utils import exit_with_error
 
 try:
     # 导入 mmcls 中的注册表
