@@ -5,10 +5,7 @@ img_norm_cfg = dict(
 crop_size = (512, 1024)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(
-        type='LoadAnnotations',
-        # reduce_zero_label=True
-    ),
+    dict(type='LoadAnnotations'),
     dict(type='Resize', img_scale=(2048, 1024), ratio_range=(0.5, 2.0)),
     dict(type='RandomCrop', crop_size=(512, 1024), cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5),
@@ -60,6 +57,4 @@ data = dict(
         # reduce_zero_label=True,
         pipeline=test_pipeline))
 
-custom_imports = dict(
-    imports=['nuim_dataset'],
-    allow_failed_imports=False)
+custom_imports = dict(imports=['nuim_dataset'], allow_failed_imports=False)

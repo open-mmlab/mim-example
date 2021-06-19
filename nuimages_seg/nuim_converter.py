@@ -1,10 +1,11 @@
 import argparse
 import base64
+from os import path as osp
+
 import mmcv
 import numpy as np
 from nuimages import NuImages
 from nuimages.utils.utils import mask_decode, name_to_index_mapping
-from os import path as osp
 
 nus_categories = ('car', 'truck', 'trailer', 'bus', 'construction_vehicle',
                   'bicycle', 'motorcycle', 'pedestrian', 'traffic_cone',
@@ -61,6 +62,7 @@ def parse_args():
 
 def get_img_annos(nuim, img_info, cat2id, seg_root):
     """Get semantic segmentation map for an image.
+
     Args:
         nuim (obj:`NuImages`): NuImages dataset object
         img_info (dict): Meta information of img
@@ -70,13 +72,16 @@ def get_img_annos(nuim, img_info, cat2id, seg_root):
     sd_token = img_info['token']
     image_id = img_info['id']
     name_to_index = name_to_index_mapping(nuim.category)
+    # map the index to a continuous ID to reduce unnecessary parameters
     index_to_continuous = {
-        v:i
+        v: i
         for i, (k, v) in enumerate(name_to_index.items())
     }
 
     # Get image data.
     width, height = img_info['width'], img_info['height']
+    # this is different from previous code as 255 is usually taken as
+    # unlabeled area in mmsegmentation
     semseg_mask = np.zeros((height, width)).astype('uint8') + 255
 
     # Load stuff / surface regions.
@@ -119,7 +124,8 @@ def get_img_annos(nuim, img_info, cat2id, seg_root):
         mask = mask_decode(ann['mask'])
 
         # Draw masks for semantic segmentation and instance segmentation.
-        semseg_mask[mask == 1] = index_to_continuous[name_to_index[category_name]]
+        semseg_mask[mask == 1] = index_to_continuous[
+            name_to_index[category_name]]
 
         if category_name in NAME_MAPPING:
             cat_name = NAME_MAPPING[category_name]
@@ -178,8 +184,7 @@ def export_nuim_to_coco(nuim, data_root, out_dir, extra_tag, version, nproc):
     global process_img_anno
 
     def process_img_anno(img_info):
-        single_img_annos = get_img_annos(nuim, img_info, cat2id,
-                                                     seg_root)
+        single_img_annos = get_img_annos(nuim, img_info, cat2id, seg_root)
         return single_img_annos
 
     print('Process img annotations...')
@@ -217,7 +222,8 @@ def main():
                             version, args.nproc)
 
         if version == 'v1.0-val':
-            full_val_infos = mmcv.load(f'{args.out_dir}/{args.extra_tag}_{version}.json')
+            full_val_infos = mmcv.load(
+                f'{args.out_dir}/{args.extra_tag}_{version}.json')
             selected_images = full_val_infos['images'][:2400]
             selected_img_ids = [x['id'] for x in selected_images]
             selected_anns = []
@@ -229,12 +235,10 @@ def main():
             selected_val_infos = dict(
                 images=selected_images,
                 annotations=selected_anns,
-                categories=full_val_infos['categories']
-            )
+                categories=full_val_infos['categories'])
 
-            mmcv.dump(
-                selected_val_infos,
-                f'{args.out_dir}/{args.extra_tag}_{version}2400.json')
+            mmcv.dump(selected_val_infos,
+                      f'{args.out_dir}/{args.extra_tag}_{version}2400.json')
 
     name_to_index = name_to_index_mapping(nuim.category)
     print(f'Parse masks of {len(name_to_index)} categories:')

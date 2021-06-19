@@ -1,8 +1,9 @@
-import mmcv
 import os.path as osp
+
+import mmcv
 from mmcv.utils import print_log
-from mmseg.datasets.builder import DATASETS
 from mmseg.datasets import CustomDataset
+from mmseg.datasets.builder import DATASETS
 from mmseg.utils import get_root_logger
 
 
@@ -39,6 +40,7 @@ class NuImagesDataset(CustomDataset):
     def load_annotations(self, img_dir, img_suffix, ann_dir, seg_map_suffix,
                          split):
         """Load annotation from directory.
+
         Args:
             img_dir (str): Path to image directory
             img_suffix (str): Suffix of images.
@@ -56,29 +58,10 @@ class NuImagesDataset(CustomDataset):
         for img in annotations['images']:
             img_info = dict(filename=img['file_name'])
             seg_map = img_info['filename'].replace(img_suffix, seg_map_suffix)
-            img_info['ann'] = dict(
-                seg_map=osp.join(ann_dir, 'semantic_masks', seg_map))
+            img_info['ann'] = dict(seg_map=osp.join('semantic_masks', seg_map))
             img_infos.append(img_info)
 
         print_log(
             f'Loaded {len(img_infos)} images from {ann_dir}',
             logger=get_root_logger())
         return img_infos
-
-    def pre_pipeline(self, results):
-        """Prepare results dict for pipeline."""
-        super(NuImagesDataset, self).pre_pipeline(results)
-        results['seg_prefix'] = ''
-
-    def get_gt_seg_maps(self, efficient_test=False):
-        """Get ground truth segmentation maps for evaluation."""
-        gt_seg_maps = []
-        for img_info in self.img_infos:
-            seg_map = img_info['ann']['seg_map']
-            if efficient_test:
-                gt_seg_map = seg_map
-            else:
-                gt_seg_map = mmcv.imread(
-                    seg_map, flag='unchanged', backend='pillow')
-            gt_seg_maps.append(gt_seg_map)
-        return gt_seg_maps
