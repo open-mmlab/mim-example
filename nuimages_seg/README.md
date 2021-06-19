@@ -1,7 +1,7 @@
 # Use nuImages Dataset for Semantic Segmentation
 
 In this example, we will show how to integrate a new dataset with OpenMMLab projects to perform vision tasks.
-Here we take the nuImages dataset as an example and elaborate how to use it for semantic segmentation with MMSegmentation.
+Here we take the nuImages dataset as an example and show how to use it for semantic segmentation with MMSegmentation.
 There are basically four steps to go as below, and we will do it step by step.
 
 1. Preprocess the dataset
