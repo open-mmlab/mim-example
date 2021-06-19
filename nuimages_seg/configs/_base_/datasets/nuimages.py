@@ -38,7 +38,6 @@ data = dict(
         img_dir='',
         ann_dir='annotations/',
         split='annotations/nuimages_v1.0-train.json',
-        # reduce_zero_label=True,
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
@@ -46,7 +45,6 @@ data = dict(
         img_dir='',
         ann_dir='annotations/',
         split='annotations/nuimages_v1.0-val2400.json',
-        # reduce_zero_label=True,
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
@@ -54,7 +52,6 @@ data = dict(
         img_dir='',
         ann_dir='annotations/',
         split='annotations/nuimages_v1.0-val2400.json',
-        # reduce_zero_label=True,
         pipeline=test_pipeline))
 
 custom_imports = dict(imports=['nuim_dataset'], allow_failed_imports=False)
