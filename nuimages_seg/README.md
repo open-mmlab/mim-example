@@ -55,7 +55,6 @@ project
 ├── nuimages
 │   ├── annotations
 │   │   ├── nuimages_v1.0-mini.json
-│   │   │   └── nuimages.py
 │   │   ├── nuimages_v1.0-train.json
 │   │   ├── nuimages_v1.0-val.json
 │   │   ├── nuimages_v1.0-val2400.json
