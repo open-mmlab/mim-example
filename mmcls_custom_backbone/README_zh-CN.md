@@ -88,4 +88,4 @@ PYTHONPATH=$PWD:$PYTHONPATH mim test mmcls custom_net_config.py --checkpoint ckp
 ```
 
 在这里，我们直接使用 [MIM](https://github.com/open-mmlab/mim) 启动了训练和测试.
-实际上， MIM 提供了更多激动人心的功能, 请查看 [MIM 的文档](https://mim.readthedocs.io/en/latest/)来了解更多细节。·
+实际上， MIM 提供了更多激动人心的功能, 请查看 [MIM 的文档](https://openmim.readthedocs.io/en/latest/)来了解更多细节。
